@@ -1,0 +1,135 @@
+
+<script>
+</script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8x8 to byte Generator</title>
+    <style>
+        
+        body{
+            background-color: black;
+            padding: 0;
+            color: white;
+            display: grid; 
+            grid-template-columns: repeat(8, 0fr);
+            grid-template-rows: repeat(8, 0fr); 
+            gap: 0px 0px; 
+            grid-template-areas: 
+            ". . . ."
+            ". . . ."
+            ". . . ."
+            ". . . .";
+            height: 80%;
+            width: 80%;
+        }
+        
+        button{
+            background-color: darkslategrey;
+            width: 50;
+            height: 50;
+            border-radius: 20px;
+        }
+        #output {
+            width: 90%;
+            height: 20%;
+            position: absolute;
+            bottom: 100px;
+            left: 10px;
+        }
+        #clear{
+            position: absolute;
+            bottom: 10px;
+            height: 75px;
+            width: 100px;
+        }
+        #generate{
+            position: absolute;
+            bottom: 10px;
+            height: 75px;
+            width: 100px;
+            left: 110px;
+        }
+    </style>
+</head>
+    
+<body>
+    <textarea id="output" readonly></textarea>
+    <button id="clear" onclick="clear_block()">Clear</button>
+    <button id="generate" onclick="generate()">Generate</button>
+</body>
+</html>
+
+<script>
+    selectedBlocks = [];
+
+    function add_to_text(anArray){
+        document.getElementById("output").value = "";
+        for(i=0;i<anArray.length; i++){
+            y = document.getElementById("output").value;
+            var x = y + anArray[i] + "\n";
+            document.getElementById("output").value = x;
+        }
+        document.getElementById("output").value = document.getElementById("output").value + "Byte Array: " + anArray;
+
+    }
+
+    function add_block(value){
+        var valName = "button" + value
+        
+        if (selectedBlocks.includes(value, 0)){
+            const index = selectedBlocks.indexOf(value);
+            selectedBlocks.splice(index, 1)
+            document.getElementById(value).style.backgroundColor = "darkslategrey";
+        }else{
+            selectedBlocks.push(value);
+            console.log(selectedBlocks);
+            document.getElementById(value).style.backgroundColor = "green";
+        }    
+    }
+    function clear_block(){
+       
+        for(i=0;i<selectedBlocks.length;i++){
+            document.getElementById(selectedBlocks[i]).style.backgroundColor = "darkslategrey";
+        }
+        selectedBlocks = [];
+        document.getElementById("output").value = "";
+    }
+    function generate(){
+        newArray = [];
+        completedArray = [];
+        var y = 64 
+        //populate blank array
+        for(i=0; i<y; i++){
+            newArray.push(0);
+        }
+        for(i=0; i<selectedBlocks.length; i++){
+            console.log(selectedBlocks[i]);
+            newArray[selectedBlocks[i]] = 1;
+        }
+        var text = "B"
+        for(i=0; i<newArray.length;i++){
+            text = text + newArray[i]
+            if (text.length >= Math.sqrt(y)+1){
+                completedArray.push(text);
+                text = "B"
+            }
+        }
+        add_to_text(completedArray);
+    }
+
+    const w = 8;
+    const h = 8;
+    for(i = 0;i<w*h;i++){
+        var name = "button" + i;
+        const button = document.createElement("button");
+        button.setAttribute("value", i);
+        button.setAttribute("id", i);
+        button.setAttribute("onclick", 'add_block(id)');
+        document.body.appendChild(button);
+    }
+</script>
